@@ -1,23 +1,39 @@
-version: '2.4'
+# mysql ---------------------------------------------
+datastore:
+  image: busybox
+  volumes:
+      - /opt/datastore:/var/lib/mysql
+  container_name: mysql-datastore
+mysql:
+  image: mysql:5.7
+  environment:
+    MYSQL_ROOT_PASSWORD: password
+    MYSQL_DATABASE: study
+    MYSQL_USER: docker
+    MYSQL_PASSWORD: docker
+  ports:
+    - "3306:3306"
+  volumes_from:
+    - datastore
+  container_name: mysql-db
+# ---------------------------------------------------
 
-services:
-  db:
-    image: postgres
-#    volumes:
-#      - ./db-data/data:/var/lib/postgresql/data
-#      - ./db-data/log:/var/log/postgresql
-    restart: always
-    environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: pass
-      POSTGRES_DB: study
-    ports:
-      - 5432:5432
-  flyway:
-    image: flyway/flyway
-#    command: info
-    command: -url=jdbc:postgresql://db/study -schemas=batch -user=user -password=pass -connectRetries=60 -validateOnMigrate=false migrate
-    volumes:
-      - ./postgres:/flyway/sql
-    depends_on:
-      - db
+# postgres ------------------------------------------
+postgres-data:
+  image: busybox
+  volumes:
+      - /var/lib/postgresql/data
+  container_name: postgres-datastore
+
+postgresql:
+  image: postgres
+  environment:
+    POSTGRES_USER: docker
+    POSTGRES_PASSWORD: docker
+    POSTGRES_DB: study
+  ports:
+    - "5432:5432"
+  container_name: postgres-db
+  volumes_from:
+      - postgres-data
+# ---------------------------------------------------
