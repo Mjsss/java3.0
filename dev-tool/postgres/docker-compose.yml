@@ -1,0 +1,23 @@
+version: '2.4'
+
+services:
+  db:
+    image: postgres
+#    volumes:
+#      - ./db-data/data:/var/lib/postgresql/data
+#      - ./db-data/log:/var/log/postgresql
+    restart: always
+    environment:
+      POSTGRES_USER: docker
+      POSTGRES_PASSWORD: docker
+      POSTGRES_DB: study
+    ports:
+      - 5432:5432
+  flyway:
+    image: flyway/flyway
+#    command: info
+    command: -url=jdbc:postgresql://db/study -schemas=batch -user=docker -password=docker -connectRetries=60 -validateOnMigrate=false migrate
+    volumes:
+      - ./postgres:/flyway/sql
+    depends_on:
+      - db
