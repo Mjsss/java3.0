@@ -2,10 +2,8 @@
 
 
 ## 環境構築
-### DockerでDB作成及びデータ初期化
  ```shell script
- cd dev-tool
- docker-compose -f docker-compose.yml up -d
+dev-Tool
  ```
 
 ## 目録
